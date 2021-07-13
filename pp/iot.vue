@@ -22,10 +22,7 @@
             </span>
 
             <template v-for="item in cols" :slot="item.key" slot-scope="text, record">
-                <!-- {{ record[item.key].split(',')[1] }}~{{ record[item.key].split(',')[2] }}
-               
-                {{ record[item.key].split(',')[0] }} -->
-                <!-- {{record[item.key]}}  -->
+      
                 <div :key="item.key+'span'" v-if="record[item.key]">
                     {{record[item.key][0].fmdate}}~{{record[item.key][0].todate ||''}}
                     <br>
