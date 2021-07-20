@@ -35,6 +35,7 @@ module.exports = {
       fmDate: "起始日期",
       toDate: "结束日期",
       weight: "权重",
+      Detaildialog: "明细",
     },
     tw: {
       pageTitle: '電錶明細',
@@ -71,6 +72,8 @@ module.exports = {
       fmDate: "起始日期",
       toDate: "結束日期",
       weight: "權重",
+      datetime: "時間",
+      Detaildialog: "明細",
     },
     us: {
       pageTitle: 'Equip Detail Search',
@@ -107,6 +110,8 @@ module.exports = {
       fmDate: "FM Date",
       toDate: "To Date",
       weight: "Weight",
+      datetime: "Date Time",
+      Detaildialog: "Detail",
     }
   },
 }
