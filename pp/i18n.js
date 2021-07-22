@@ -36,6 +36,8 @@ module.exports = {
       toDate: "结束日期",
       weight: "权重",
       Detaildialog: "明细",
+      record:"数值",
+      added:"变化",
     },
     tw: {
       pageTitle: '電錶明細',
@@ -73,7 +75,9 @@ module.exports = {
       toDate: "結束日期",
       weight: "權重",
       datetime: "時間",
-      Detaildialog: "明細",
+      Detaildialog: "明細", 
+      record:"數值",
+      added:"變化",
     },
     us: {
       pageTitle: 'Equip Detail Search',
@@ -111,7 +115,9 @@ module.exports = {
       toDate: "To Date",
       weight: "Weight",
       datetime: "Date Time",
-      Detaildialog: "Detail",
+      Detaildialog: "Detail", 
+      record:"Value",
+      added:"Added",
     }
   },
 }
