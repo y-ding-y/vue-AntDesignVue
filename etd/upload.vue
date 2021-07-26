@@ -106,9 +106,6 @@
                 this.fileList = [file];
                 return false;
             },
-            getIndex($index) {  //表格序号 
-                return ((this.currentPage - 1) * this.pagesize + $index + 1)
-            },
             resize(size) {
                 this.sSize = size
             },
