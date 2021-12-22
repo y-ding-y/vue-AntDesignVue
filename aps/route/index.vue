@@ -1,43 +1,70 @@
 <template>
-    <ef-main :isMainPage="true" :loading="loading" :key="id">
+    <ef-main :isMainPage="true" :loading="loading">
         <a-table class="basebg" :id="tableId" :size="sSize" :bordered="true" :columns="columns" :pagination="false"
-            :scroll="scroll" :data-source="tabledata" :rowClassName="rowClassName" @change="onTableChange" rowKey="id">
+            :scroll="scroll" :data-source="tabledata" rowKey="id">
             <template slot="no" slot-scope="txt, rec, index">
                 <span v-if="!rec.isaction"> {{index+1}}</span>
                 <span v-else> {{index+1}}</span>
             </template>
 
-            <template slot="name" slot-scope="txt,rec">
-                <span v-if="! rec.isaction">{{txt}}</span>
-                <a-input v-if=" rec.isaction" v-model="rec.name"></a-input>
+            <template slot="orgname" slot-scope="txt,rec">
+                <span v-if=" ! rec.isaction"> {{txt}} </span>
+
+                <div v-if="rec.isaction">
+                    <a-select v-if="rec.orgidlist" v-model="rec.org_id" style="width: 100%;">
+                        <a-select-option v-for="(item) in rec.orgidlist" :value="item.id" :key="item.id">{{item.name}}
+                        </a-select-option>
+                    </a-select>
+                    <!-- <a-input v-else v-model="rec.station" style="display: none;"></a-input> -->
+                </div>
             </template>
+
+            <template v-for="(item,index) in ['deptno','product','name','name_cn','name_en']" :slot="item"
+                slot-scope="txt,rec">
+                <div :key="index">
+                    <span v-if="! rec.isaction">{{txt}}</span>
+                    <a-input v-if=" rec.isaction" v-model="rec[item]"></a-input>
+                </div>
+            </template>
+
+            <!-- <template slot="name" slot-scope="txt,rec">
+                <a v-if="! rec.isaction" @click="handle_todashboard(rec)">{{txt}}</a>
+                <a-input v-if=" rec.isaction" v-model="rec.name" ></a-input>
+
+            </template> -->
+
+            <!-- <template slot="station" slot-scope="txt,rec">
+                <span v-if="! rec.isaction">{{rec.station_name}}</span>
+                <div v-if="rec.isaction">
+                    <a-select v-if=" actionstatus=='update' && rec.stationlist" v-model="rec.org_id"
+                        style="width: 100%;" :defaultValue="rec.org_id">
+                        <a-select-option v-for="(item,index) in rec.stationlist" :value="item.id" :key="index"
+                            :title="item.name">{{item.name}}
+                        </a-select-option>
+                    </a-select>
+                    
+                </div> 
+            </template> -->
 
             <template slot="dept_name" slot-scope="txt,rec">
                 <span v-if="! rec.isaction">{{txt}}</span>
                 <a-input v-if=" rec.isaction" v-model="rec.dept_name" disabled></a-input>
             </template>
 
-            <template slot="type" slot-scope="txt,rec">
-                <span v-if="! rec.isaction">{{txt}}</span>
-                <a-radio-group v-if=" rec.isaction" v-model="rec.type" button-style="solid">
-                    <a-radio-button value="online">
-                        online
-                    </a-radio-button>
-                    <a-radio-button value="offline">
-                        offline
-                    </a-radio-button>
-                </a-radio-group>
+            <template slot="annu" slot-scope="txt,rec">
+                <span v-if="! rec.isaction">{{Number(txt)}}</span>
+                <a-input v-if=" rec.isaction" v-model="rec.annu" disabled></a-input>
             </template>
-            <template slot="seq" slot-scope="txt,rec">
-                <span v-if="! rec.isaction">{{txt}}</span>
-                <a-input v-if=" rec.isaction" v-model="rec.seq" oninput="value=value.replace(/[^\d.]/g,'') "></a-input>
-            </template>
+
 
             <template slot="actions" slot-scope="text, rec,index">
                 <div v-if="!rec.isaction">
-                    <a-button :class="'warning'" size="small" @click="handle_update(rec)">
-                        <a-icon type="edit" />
-                    </a-button>
+                    <a-tooltip title="編輯基本資料">
+                        <a-button :class="'warning'" size="small" @click="handle_update(rec)">
+                            <a-icon type="edit" />
+                        </a-button>
+                    </a-tooltip>
+
                     &nbsp;
                     <a-popconfirm title="Are you sure delete ?" ok-text="Yes" cancel-text="No"
                         @confirm="handle_delete(rec,index)">
@@ -73,15 +100,15 @@
 
     const i18n = require('./i18n')
     export default {
-        name: 'workerStation',
+        name: 'workerInfo',
         components: { EfMain },
+        i18n: merge(require('@/i18n'), i18n),
         props: {
             dept: { type: String, default: "" },
         },
-        i18n: merge(require('@/i18n'), i18n),
         data() {
             return {
-                tableId: 'workerStation' + new Date().format('hiu'),
+                tableId: 'oqaworkerdstation' + new Date().format('hiu'),
                 loadcount: 0,
                 tabledata: [],
                 sSize: 'middle',
@@ -91,13 +118,12 @@
                 deptname: "",
                 actionstatus: "",
                 temp_rec: {},
-                id: 0,
+
+                orgidlist: []
             };
         },
         watch: {
-            dept() {
-                this.id++;
-            },
+
         },
         computed: {
             ...mapState('setting', ['lang', 'pageMinHeight']),
@@ -110,15 +136,17 @@
             columns() {
                 return [
                     { key: 'no', align: 'center', title: this.$t('no'), width: 100 },
-                    { key: 'dept_name', align: 'left', title: this.$t('dept'), width: 100 },
+                    { key: 'orgname', align: 'left', title: this.$t('orgname'), width: 100 },
+                    { key: 'deptno', align: 'left', title: this.$t('deptno'), width: 100 },
+                    { key: 'product', align: 'left', title: this.$t('product'), width: 100 },
                     { key: 'name', align: 'left', title: this.$t('name'), width: 100 },
-                    { key: 'seq', align: 'left', title: this.$t('seq'), width: 100, sorter: (a, b) => Number(a.seq) > Number(b.seq) ? 1 : -1 },
-                    { key: 'type', align: 'left', title: this.$t('type'), width: 100 },
-                    { key: 'actions', align: 'left', title: this.$t('actions'), width: 100 },
+                    { key: 'name_cn', align: 'left', title: this.$t('name_cn'), width: 100 },
+                    { key: 'name_en', align: 'left', title: this.$t('name_en'), width: 100 },
+                    { key: 'actions', align: 'left', title: this.$t('actions'), width: 130 },
                     //		{ key: 'qty', align: 'right', title: this.$t("qty") },
                 ].map((e) => {
                     e.dataIndex = e.key
-                    // e.sorter = ['no', 'actions'].includes(e.key) ? false : (a, b) => this.sorter(a, b, e.key)
+                    //  e.sorter = ['no', 'actions'].includes(e.key) ? false : (a, b) => this.sorter(a, b, e.key)
                     e.slots = { title: this.$t(e.key) }
                     e.scopedSlots = e.scopedSlots ?? { customRender: e.slot ?? e.key }
                     return e
@@ -126,54 +154,52 @@
             },
             forms() {
                 return {
-                    seq: 0,
+                    org_id: "",
+                    orgidlist: this.orgidlist,
+                    deptno: "",
+                    product: "",
                     name: "",
-                    dept_name: this.deptname,
-                    dept: "",
-                    type: "online",
+                    name_cn: "",
+                    name_en: "",
                     isaction: true,
                 }
             }
         },
         created() {
             this.loadcount = 1;
-
-            this.loadcount = 1;
-            reqPost('WORKER', { prop: "getdeptid", name: this.$props.dept }).then(res => {
-                this.loadcount--;
-                this.deptid = res.data;
-                this.deptname = this.$props.dept
-                this.handle_search();
+            // reqPost('WORKER', { prop: "getdeptid", name: this.$props.dept }).then(res => {
+            //     this.loadcount--;
+            //     this.deptid = res.data;
+            //     this.deptname = this.$props.dept;
+            //     this.handle_search();
+            // }) 
+            reqPost('PARA_SET', { paras: [{ "key": "PARA.201" }] }).then(res => {
+                this.loadcount--; 
+                if (res.data.length > 0) {
+                    //  this.plantlist = res.data[0].data;
+                    this.orgidlist = res.data[0].data.map(e => {
+                        return {
+                            id: String(e.id),
+                            name: e.name
+                        }
+                    });
+                }
+                else {
+                    this.$message.error("請先維護部門")
+                }
             })
 
-            // reqPost('PARA_SET', { paras: [{ "key": "WORKER.dept" }] }).then(res => {
-            //     this.loadcount--;
-            //     if (res.data[0].data.length > 0) {
-            //         this.deptlist = res.data;
-            //         this.formItems[0].value = res.data[0].data[0].key;
-            //         this.deptid = res.data[0].data[0].key;
-            //         this.deptname = res.data[0].data[0].name;
-            //         this.handle_search();
-            //     }
-            //     else {
-            //         this.$message.error("請先維護部門")
-            //     }
-            // })
-
+            this.handle_search();
         },
         methods: {
-            submit(values) {
-                this.deptid = values.dept;
-                this.handle_search();
-            },
 
             handle_search() {
                 this.loadcount = 1;
                 var params = {
-                    prop: "getstation",
-                    id: this.deptid
+                    prop: "getapsroute",
+                    // id: this.deptid
                 }
-                reqPost('WORKER', params).then(res => {
+                reqPost('APS', params).then(res => {
                     this.loadcount--;
                     this.tabledata = res.data.map(e => {
                         e.isaction = false;
@@ -183,7 +209,7 @@
             },
 
             handle_delete(rec, index) {
-                reqPost("WORKER", { prop: "deletestation", id: rec.id }).then(res => {
+                reqPost("APS", { prop: "deleteapsroute", id: rec.id }).then(res => {
                     if (res.data > 0) {
                         this.i++;
                         this.$message.success("Delete Success")
@@ -207,18 +233,20 @@
                     if (e.id == rec.id && flag == 1) {
                         this.temp_rec = { ...rec };
                         e.isaction = true;
+                        e.orgidlist = this.orgidlist;
+                        // e.org_id=e.orgidlist[0].id 
                         this.actionstatus = "update"
                     }
                     return e;
                 })
             },
             handle_saveupdate(rec) {
-                if (rec.name == "") {
-                    this.$message.error("Please input Name")
+                if (rec.station == 0) {
+                    this.$message.error("Please Chose Station")
                 }
                 else {
-                    rec.prop = "updatestation";
-                    reqPost("WORKER", rec).then(res => {
+                    rec.prop = "updateapsroute";
+                    reqPost("APS", rec).then(res => {
                         if (res.data > 0) {
                             this.$message.success("Update Success")
                             this.handle_search();
@@ -237,7 +265,6 @@
                     }
                 }
                 this.actionstatus = "add";
-                temp.seq = this.tabledata.length + 1;
                 temp.id = "id" + this.tabledata.length + 1;
                 this.tabledata.push(temp)
             },
@@ -253,59 +280,42 @@
             handle_saveadd(rec) {
                 var item = rec;
                 item.dept = this.deptid;
-                if (item.name == "") {
-                    this.$message.error("Please input Name")
-                }
-                else {
-                    item.prop = "insertstation";
-                    reqPost("WORKER", item).then(res => {
-                        if (res.data > 0) {
-                            this.$message.success("Add Success")
-                            this.handle_search();
-                        }
-                        else {
-                            this.$message.error("Add Error")
-                        }
-                    })
-                }
+                item.prop = "insertapsroute";
+                reqPost("APS", item).then(res => {
+                    if (res.data > 0) {
+                        this.$message.success("Add Success")
+                        this.handle_search();
+                    }
+                    else {
+                        this.$message.error("Add Error")
+                    }
+                })
+            },
+
+            clear_input(e, index) {
+                var temp = { ...e }
+                temp.stationlist = [];
+                temp.lev_date = "";
+                temp.salary_type = "";
+                temp.annu_date = "";
+                temp.name = "";
+                this.tabledata.splice(index, 1, temp);
             },
 
             resize(size) {
                 this.sSize = size
             },
-            onTableChange(pagination, filters, sorter) {
-                this.sortOrder = sorter.order
-            },
+
 
             rowClass(record) {
                 return record.key === this.footerRowKey ? 'table-footer' : null
             },
 
-            sorter(a, b, rcs) {
-                const order = this.sortOrder
-                const fKey = this.footerRowKey
-
-                if (a.key === fKey) {
-                    return order === 'ascend' ? 1 : -1
-                } else if (b.key === fKey) {
-                    return order !== 'ascend' ? 1 : -1
-                } else if (rcs === 'name') {
-                    const aN = a[rcs]
-                    const bN = b[rcs]
-                    return aN === bN ? 0 : aN > bN ? 1 : -1
-                } else {
-                    const aI = a[rcs] ?? 1
-                    const bI = b[rcs] ?? 1
-                    return Math.sign(aI - bI)
-                }
-            },
 
 
-            rowClassName(record) {
-                return record.key === this.footerRowKey
-                    ? 'ef-sfcs-stat-table-footer'
-                    : null
-            },
+
+
+
         },
     };
 </script>

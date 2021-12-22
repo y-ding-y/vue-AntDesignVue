@@ -8,7 +8,11 @@ module.exports = {
       lev_date:"离职日期",
       empno:"工号",
       station:"工站", 
-      annu:"年资"
+      annu:"年资",
+      grade:"职称",
+      sysdate:"当前日期",
+      qty:"人数",
+      title:"List",
     },
     tw: { 
       created_at: "創建日期",
@@ -18,7 +22,11 @@ module.exports = {
       lev_date:"離職日期",
       empno:"工號",
       station:"工站", 
-      annu:"年資"
+      annu:"年資",
+      grade:"職稱",
+      sysdate:"當前日期",
+      qty:"人數",
+      title:"List",
     },
     us: { 
       created_at: "Create Date",
@@ -28,7 +36,11 @@ module.exports = {
       lev_date:"Leave Date",
       empno:"EmpNO",
       station:"Station", 
-      annu:"Annu"
+      annu:"Annu Count",
+      grade:"Grade",
+      sysdate:"Date",
+      qty:"Qty",
+      title:"List",
     }
   },
 }

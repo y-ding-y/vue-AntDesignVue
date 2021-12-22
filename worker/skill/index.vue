@@ -1,7 +1,7 @@
 <template>
-    <ef-main :isMainPage="true" :loading="loading" :form-items="formItems" @submit="submit">
+    <ef-main :isMainPage="true" :loading="loading" :key="id" >
         <a-table class="basebg" :id="tableId" :size="sSize" :bordered="true" :columns="columns" :pagination="false"
-            :scroll="scroll" :data-source="tabledata" :rowClassName="rowClassName" @change="onTableChange" rowKey="id">
+            :scroll="scroll" :data-source="tabledata"  @change="onTableChange" rowKey="id">
             <template slot="no" slot-scope="txt, rec, index">
                 <span> {{index+1}}</span>
             </template>
@@ -11,7 +11,7 @@
             </template>
 
             <template v-for="(item,index) in stationlist" :slot="item.id" slot-scope="txt,rec,i">
-                <div :key="index"> 
+                <div :key="index">
                     <a-switch @change="handle_switch(rec,item.id,i)" size="small" v-model="rec[item.id].bol" />
                 </div>
             </template>
@@ -25,21 +25,20 @@
     import { merge } from '@/utils/util'
     import EfMain from '@/components/page/main'
     import { mapState } from 'vuex'
-
-    const formItems = [
-        { key: 'dept', type: 'select', paraKey: "WORKER.dept", allowClear: false, },
-    ]
+ 
 
     const i18n = require('./i18n')
     export default {
-        name: 'oqaworkerdstation',
+        name: 'workerSkill',
         components: { EfMain },
-        i18n: merge(require('./i18n'), i18n),
+        i18n: merge(require('@/i18n'), i18n),
+        props: {
+            dept: { type: String, default: "" },
+        },
         data() {
             return {
-                tableId: 'oqaworkerdstation' + new Date().format('hiu'),
-                loadcount: 0,
-                formItems,
+                tableId: 'workerSkill' + new Date().format('hiu'),
+                loadcount: 0, 
                 tabledata: [],
                 sSize: 'middle',
                 isedit: false,
@@ -50,34 +49,36 @@
                 temp_rec: {},
                 stationlist: [],
                 workerlist: [],
+                id:0,
             };
         },
         watch: {
-
+            dept(){ 
+               this.id++;
+            },
         },
         computed: {
             ...mapState('setting', ['lang', 'pageMinHeight']),
             scroll() {
-                return { y: this.pageMinHeight - 200 }
+                return { x: this.columns.length * 100, y: this.pageMinHeight - 200 }
             },
             loading() {
                 return this.loadcount > 0;
             },
             columns() {
                 var arr = [
-                    { key: 'no', align: 'center', title: this.$t('no'), width: 100 },
-                    { key: 'name', align: 'left', title: this.$t('name'), width: 100 },
+                    { key: 'no', align: 'center', title: this.$t('no'), width: 100 , fixed: 'left'},
+                    { key: 'name', align: 'left', title: this.$t('name'), width: 100, fixed: 'left' },
                 ];
 
                 var temp = [];
                 this.stationlist.map(e => {
                     temp.push({ key: e.id, title: e.name })
-                })
-                console.log(temp)
+                }) 
                 return [...arr, ...temp].map((e) => {
                     e.dataIndex = e.key
-                    e.sorter = ['no', 'actions'].includes(e.key) ? false : (a, b) => this.sorter(a, b, e.key)
-                    e.slots = { title: this.$t(e.key) }
+                //    e.sorter = ['no', 'actions'].includes(e.key) ? false : (a, b) => this.sorter(a, b, e.key)
+                   // e.slots = { title: this.$t(e.key) }
                     e.scopedSlots = e.scopedSlots ?? { customRender: e.slot ?? e.key }
                     return e
                 })
@@ -97,34 +98,39 @@
         },
         created() {
             this.loadcount = 1;
-            reqPost('PARA_SET', { paras: [{ "key": "WORKER.dept" }] }).then(res => {
+            reqPost('WORKER', { prop: "getdeptid", name: this.$props.dept }).then(res => {
                 this.loadcount--;
-                if (res.data[0].data.length > 0) {
-                    this.deptlist = res.data;
-                    this.formItems[0].value = res.data[0].data[0].key;
-                    this.deptid = res.data[0].data[0].key;
-                    this.deptname = res.data[0].data[0].name;
-                    this.handle_searchstation();
-                }
-                else {
-                    this.$message.error("請先維護部門")
-                }
+                this.deptid = res.data;
+                this.dept_name = this.$props.dept;
+                this.handle_searchstation();
             })
+            // reqPost('PARA_SET', { paras: [{ "key": "WORKER.dept" }] }).then(res => {
+            //     this.loadcount--;
+            //     if (res.data[0].data.length > 0) {
+            //         this.deptlist = res.data;
+            //         this.formItems[0].value = res.data[0].data[0].key;
+            //         this.deptid = res.data[0].data[0].key;
+            //         this.deptname = res.data[0].data[0].name;
+            //         this.handle_searchstation();
+            //     }
+            //     else {
+            //         this.$message.error("請先維護部門")
+            //     }
+            // })
 
         },
         methods: {
-            submit(values) {
-                this.deptid = values.dept;
-
-                this.handle_searchstation();
-            },
+            // submit(values) {
+            //     this.deptid = values.dept; 
+            //     this.handle_searchstation();
+            // },
             handle_searchstation() {
                 this.loadcount = 1;
                 var params = {
                     prop: "getstation",
                     id: this.deptid
                 }
-                reqPost('WORKER_OQA', params).then(res => {
+                reqPost('WORKER', params).then(res => {
                     this.loadcount--;
                     this.stationlist = res.data;
                     this.handle_searchworker();
@@ -136,7 +142,7 @@
                     prop: "getworker",
                     id: this.deptid
                 }
-                reqPost('WORKER_OQA', params).then(res => {
+                reqPost('WORKER', params).then(res => {
                     this.loadcount--;
                     this.workerlist = res.data;
                     this.handle_search();
@@ -148,7 +154,7 @@
                     prop: "getskill",
                     id: this.deptid
                 }
-                reqPost('WORKER_OQA', params).then(res => {
+                reqPost('WORKER', params).then(res => {
                     this.loadcount--;
                     this.tabledata = this.workerlist.map(e => {
                         this.stationlist.map(s => {
@@ -159,7 +165,7 @@
                                     e[s.id].id = a.id
                                     return true;
                                 }
-                                else { 
+                                else {
                                     e[s.id] = {};
                                     e[s.id].bol = false;
                                 }
@@ -182,21 +188,20 @@
                         //     }
                         // })
 
-                    }); console.log(this.tabledata)
+                    });  
                 })
             },
 
-            handle_switch(e, stationid,index) {
-                console.log(e+"-"+stationid)
+            handle_switch(e, stationid, index) { 
                 var params = {
                     prop: e[stationid].bol ? "addskill" : "deleteskill",
                     worker: e.id,
                     station: stationid,
-                    id:e[stationid].id
+                    id: e[stationid].id
                 }
-                reqPost("WORKER_OQA", params).then(res => {
+                reqPost("WORKER", params).then(res => {
                     if (res.data > 0) {
-                        this.$message.success("Success") 
+                        this.$message.success("Success")
                         this.tabledata.splice(index, 1, e);
                     }
                     else {
@@ -235,11 +240,7 @@
             },
 
 
-            rowClassName(record) {
-                return record.key === this.footerRowKey
-                    ? 'ef-sfcs-stat-table-footer'
-                    : null
-            },
+           
         },
     };
 </script>
