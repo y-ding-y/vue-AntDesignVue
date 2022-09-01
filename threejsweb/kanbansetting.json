@@ -1,0 +1,396 @@
+{
+    "btns": [
+        {
+            "key": "model",
+            "name": "bg",
+            "btnname": "背景",
+            "comname": "model",
+            "iconname": "file",
+            "expandpara": {
+                "zIndex": -999
+            },
+            "comurl": "@/components/three3D/model.vue"
+        },
+        {
+            "key": "background",
+            "name": "background",
+            "btnname": "background",
+            "comname": "background",
+            "iconname": "appstore",
+            "expandpara": {
+                "zIndex": -999
+            },
+            "comurl": "@/components/three3D/background.vue"
+        },
+        {
+            "key": "image",
+            "name": "image",
+            "btnname": "图片",
+            "comname": "image",
+            "iconname": "picture",
+            "expandpara": {},
+            "comurl": "@/components/three3D/image.vue"
+        },
+        {
+            "key": "piechart3D",
+            "name": "piechart3D",
+            "btnname": "饼图3D",
+            "comname": "piechart3D",
+            "iconname": "line-chart",
+            "expandpara": {
+                "width": 800,
+                "height": 800,
+                "highchart": {
+                    "credits": {
+                        "enabled": true,
+                        "text": "版权信息",
+                        "color": "orange",
+                        "positionx": -10,
+                        "positiony": -5,
+                        "align": "right",
+                        "verticalalign": "bottom"
+                    },
+                    "color": [
+                        "#7cb5ec",
+                        "#434348",
+                        "#90ed7d",
+                        "#f7a35c",
+                        "#8085e9",
+                        "#f15c80",
+                        "#e4d354",
+                        "#2b908f",
+                        "#f45b5b",
+                        "#91e8e1"
+                    ],
+                    "chart": {
+                        "options3denabled": true,
+                        "options3dalpha": 60,
+                        "options3dbeta": 0,
+                        "options3ddepth": 100,
+                        "frame": {
+                            "bottom": {
+                                "enabled": false,
+                                "size": 10,
+                                "color": "#C0C0C0"
+                            },
+                            "side": {
+                                "enabled": false,
+                                "size": 5,
+                                "color": "#C0C0C0"
+                            },
+                            "back": {
+                                "enabled": false,
+                                "size": 5,
+                                "color": "#D0D0D0"
+                            }
+                        }
+                    },
+                    "data": {},
+                    "drilldown": {},
+                    "labels": {},
+                    "legend": {
+                        "enabled": true,
+                        "layout": "horizontal",
+                        "color": "orange",
+                        "fontsize": 14,
+                        "align": "left",
+                        "verticalalign": "bottom",
+                        "x": 170,
+                        "y": 0,
+                        "hovercolor": "red"
+                    },
+                    "loading": {},
+                    "pane": {},
+                    "plotOptions": {
+                        "series": {
+                            "dataLabels": {
+                                "enabled": true,
+                                "style": {
+                                    "fontsize": 13,
+                                    "color": "red",
+                                    "textoutline": "none",
+                                    "fontweight": 500,
+                                    "bordercolor": "#e2e2e2",
+                                    "border": 1
+                                }
+                            }
+                        },
+                        "pie": {
+                            "size": 100,
+                            "depth": 35,
+                            "innerSize": 10,
+                            "dataLabels": {
+                                "connectorWidth": 10
+                            }
+                        },
+                        "area": {
+                            "depth": 10
+                        }
+                    },
+                    "series": [
+                        {
+                            "type": "column",
+                            "xname": "name",
+                            "yname": "y",
+                            "xAxis": 0,
+                            "yAxis": 0,
+                            "format": "y"
+                        }
+                    ],
+                    "subtitle": {},
+                    "title": {},
+                    "tooltip": {
+                        "bordercolor": "red",
+                        "style": {
+                            "color": "red"
+                        }
+                    },
+                    "xAxis": [
+                        {
+                            "enabled": true,
+                            "tickcount": 5,
+                            "min": 0,
+                            "max": 1,
+                            "titlealign": "middle",
+                            "rotation": 270,
+                            "offsetx": 0,
+                            "offsety": 0,
+                            "gridwidth": 0,
+                            "gridlinecolor": "white",
+                            "griddashtype": "Solid",
+                            "labels": {
+                                "style": {
+                                    "fontsize": 13,
+                                    "color": "red",
+                                    "textoutline": "none",
+                                    "fontweight": 500,
+                                    "bordercolor": "#e2e2e2",
+                                    "border": 1
+                                }
+                            }
+                        }
+                    ],
+                    "yAxis": [
+                        {
+                            "enabled": true,
+                            "tickcount": 5,
+                            "min": 0,
+                            "max": 1,
+                            "titlealign": "middle",
+                            "rotation": 270,
+                            "offsetx": 0,
+                            "offsety": 0,
+                            "gridwidth": 0,
+                            "gridlinecolor": "white",
+                            "griddashtype": "Solid",
+                            "labels": {
+                                "style": {
+                                    "fontsize": 13,
+                                    "color": "red",
+                                    "textoutline": "none",
+                                    "fontweight": 500,
+                                    "bordercolor": "#e2e2e2",
+                                    "border": 1
+                                }
+                            }
+                        }
+                    ],
+                    "zAxis": {}
+                }
+            },
+            "comurl": "@/components/three3D/piechart3D.vue"
+        },
+        {
+            "key": "solidgaugechart",
+            "name": "solidgaugechart",
+            "btnname": "仪表图",
+            "comname": "solidgaugechart",
+            "iconname": "line-chart",
+            "expandpara": {
+                "width": 800,
+                "height": 800,
+                "highchart": {
+                    "credits": {
+                        "enabled": true,
+                        "text": "版权信息",
+                        "color": "orange",
+                        "positionx": -10,
+                        "positiony": -5,
+                        "align": "right",
+                        "verticalalign": "bottom"
+                    },
+                    "tooltip": {
+                        "bordercolor": "red",
+                        "style": {
+                            "color": "red"
+                        }
+                    },
+                    "chart": {
+                        "spacingtop": 0,
+                        "spacingright": 0,
+                        "spacingbottom": 0,
+                        "spacingleft": 0
+                    },
+                    "data": {},
+                    "drilldown": {},
+                    "labels": {},
+                    "pane": {
+                        "center": [
+                            50,
+                            85
+                        ],
+                        "size": 100,
+                        "startAngle": -90,
+                        "endAngle": 90,
+                        "backgroundcolor": "#EEE",
+                        "innerradius": 60,
+                        "outerradius": 100,
+                        "shape": "arc",
+                        "startangle": -90,
+                        "endangle": 90
+                    },
+                    "plotOptions": {
+                        "series": {
+                            "dataLabels": {
+                                "enabled": true,
+                                "style": {
+                                    "fontsize": 13,
+                                    "color": "red",
+                                    "textoutline": "none",
+                                    "fontweight": 500,
+                                    "bordercolor": "#e2e2e2",
+                                    "border": 1
+                                },
+                                "align": "right",
+                                "verticalalign": "bottom"
+                            }
+                        }
+                    },
+                    "series": [
+                        {
+                            "type": "solidgauge",
+                            "yname": "y",
+                            "format": "y"
+                        }
+                    ],
+                    "yAxis": [
+                        {
+                            "enabled": true,
+                            "tickcount": 5,
+                            "tickposition": "inside",
+                            "min": 0,
+                            "max": 1,
+                            "titlealign": "middle",
+                            "rotation": 270,
+                            "offsetx": 0,
+                            "offsety": 0,
+                            "gridwidth": 0,
+                            "gridlinecolor": "white",
+                            "griddashtype": "Solid",
+                            "labels": {
+                                "style": {
+                                    "fontsize": 13,
+                                    "color": "red",
+                                    "textoutline": "none",
+                                    "fontweight": 500,
+                                    "bordercolor": "#e2e2e2",
+                                    "border": 1
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "comurl": "@/components/three3D/solidgaugechart.vue"
+        },
+        {
+            "key": "texts",
+            "name": "text",
+            "btnname": "文本",
+            "comname": "texts",
+            "iconname": "font-colors",
+            "expandpara": {
+                "fontSize": 20
+            },
+            "comurl": "@/components/three3D/texts.vue"
+        },
+        {
+            "key": "datetime",
+            "name": "datetime",
+            "btnname": "日期时间",
+            "comname": "datetime",
+            "iconname": "font-colors",
+            "expandpara": {
+                "fontSize": 20
+            },
+            "comurl": "@/components/three3D/datetime.vue"
+        },
+        {
+            "key": "eltable",
+            "name": "eltable",
+            "btnname": "el滚动表格",
+            "comname": "eltable",
+            "iconname": "database",
+            "expandpara": {
+                "fontSize": 20,
+                "height": 300,
+                "width": 600,
+                "table": {
+                    "columns": [
+                        {
+                            "width": 100,
+                            "label": "Date",
+                            "prop": "date"
+                        },
+                        {
+                            "width": 100,
+                            "label": "Name",
+                            "prop": "name"
+                        },
+                        {
+                            "width": 100,
+                            "label": "Address",
+                            "prop": "address"
+                        }
+                    ],
+                    "rowcell": {
+                        "fontsize": 14,
+                        "height": 50,
+                        "color": "white"
+                    },
+                    "headercell": {
+                        "fontsize": 14,
+                        "height": 50,
+                        "color": "white"
+                    }
+                }
+            },
+            "comurl": "@/components/three3D/eltable.vue"
+        },
+        {
+            "key": "showmodel",
+            "name": "showmodel",
+            "btnname": "model展示",
+            "comname": "showmodel",
+            "iconname": "",
+            "expandpara": {
+                "fontSize": 20
+            },
+            "comurl": "@/components/three3D/showmodel.vue"
+        },
+        {
+            "key": "videoplay",
+            "name": "videoplay",
+            "btnname": "video播放",
+            "comname": "videoplay",
+            "iconname": "video-camera",
+            "expandpara": {
+                "fontSize": 20,
+                "width": 400,
+                "height": 400
+            },
+            "comurl": "@/components/three3D/videoplay.vue"
+        }
+    ],
+    "id": "0"
+}
