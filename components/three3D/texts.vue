@@ -1,5 +1,6 @@
 <template>
-    <div :class="' combtn animated '+ animated" :style="[styleSet,styleclick]">
+    <div :class="' combtn animated '+ animated" :style="[styleSet]">
+        <div v-if="curdiv" :style="[styleclick]"> </div>
         <div v-if="maincontent==null" class="loadingOne" :style="{height:styleSet.height+'px'}">
             <span></span>
             <span></span>
@@ -7,14 +8,12 @@
             <span></span>
             <span></span>
         </div>
-
         {{maincontent}}
     </div>
 </template>
 
 <script>
-    //  import merge from 'deepmerge'
-
+    //  import merge from 'deepmerge' 
     export default {
         props: {
             ss: {
@@ -81,6 +80,8 @@
             },
         },
         created() {
+
+
             if (this.datebind) {
                 if (this.datarefresh) {
                     this.refreshData = setInterval(() => {
@@ -130,7 +131,7 @@
 
             styleSet: function () {
                 var style = {
-                    border: this.curdiv ? '5px solid blue' : '0px',
+                    //  border: this.curdiv ? '5px solid blue' : '0px',
                     position: 'absolute',
                     top: this.ss.top + 'px',
                     left: this.ss.left + 'px',
@@ -140,20 +141,24 @@
                     lineHeight: this.ss.height + "px",
                     zIndex: this.ss.zindex,
                     color: this.ss.color,
+                    backgroundColor: this.ss.backgroundcolor,
+                    borderRadius: this.ss.borderradius + "%",
                     textAlign: this.ss.textAlign,
                     letterSpacing: this.ss.spacing + "px",
                     fontWeight: this.ss.fontweight,
                     textDecoration: this.ss.decoration,
                     fontStyle: this.ss.fontstyle,
-                    //transform:this.ss.transform
                 }
-                //console.log(merge(this.ss, style))
                 return style
             },
             styleclick() {
-                return {
-                    //   color: "red"
+                var style = {
+                    border: this.curdiv ? '5px solid blue' : '0px',
+                    position: 'absolute',
+                    width: this.ss.width + "px",
+                    height: this.ss.height + "px",
                 }
+                return style
             },
         },
         methods: {
@@ -164,9 +169,7 @@
                     case "phpapi":
                         this.handle_phpapi(dsource, dtype);
                         break;
-                    case "nodejsemit":
-                        this.handle_nodejsemit(dsource, dtype);
-                        break;
+
                     case "publicdata":
                         this.handle_publicdata(dsource, dtype);
                         break;
@@ -198,35 +201,19 @@
                 }
             },
 
-            handle_nodejsemit(dsource, dtype) {
-                this.sockets.unsubscribe(this.temp_nodejsemit);
-                this.sockets.subscribe(this.ss[dsource], data => {
-                    this.temp_nodejsemit = this.ss[dsource]
-                    if (typeof (data) == dtype) {
-                        this.result = data
-                    }
-                    else {
-                        this.$message.error(this.ss.componentname + "数据格式错误")
-                    }
-                })
-            },
-
             handle_publicdata(dsource, dtype) {
+                var publicdata = this.$store.getters['tdpublic/commondata']
                 let temp = eval("(" + this.ss[dsource] + ")")
-                let publicdatatab = Array(this.$localForage.getItem('3dpublicdata'))
-                Promise.all(publicdatatab).then(value => {
-                    if (value[0] != null) {
-                        if (value[0].length > 0) {
-                            if (dtype == 'string') {
-                                var table = value[0][Number(temp.key)].tabledata
-                                this.result = table[Number(temp.row) - 1][temp.colname]
-                            } else if (dtype == "array") {
-                                this.result = value[0][Number(temp.key)].tabledata
-                                console.log(this.result)
-                            }
-                        }
+                if (publicdata.length > 0) {
+                    if (dtype == 'string') {
+                        var table = publicdata[Number(temp.key)].tabledata
+                        this.result = table[Number(temp.row) - 1][temp.colname]
+                    } else if (dtype == "array") {
+                        this.result = publicdata[Number(temp.key)].tabledata
+                        console.log(this.result)
                     }
-                })
+                }
+
             },
 
 
@@ -291,5 +278,62 @@
     .loadingOne span:nth-child(5) {
         -webkit-animation-delay: 0.8s;
         animation-delay: 0.8s;
+    }
+
+
+    #wave-wrap {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        border: 1px solid #adcbfe;
+        overflow: hidden;
+    }
+
+    .wave {
+        position: absolute;
+        width: 250px;
+        height: 300px;
+        background: #adcbfe;
+    }
+
+    #wave1 {
+        top: 120px;
+        left: -50px;
+        border-top-right-radius: 150px;
+        border-top-left-radius: 150px;
+        border-bottom-right-radius: 150px;
+        border-bottom-left-radius: 140px;
+        animation: waveA 4s linear infinite;
+    }
+
+    #wave2 {
+        top: 130px;
+        right: -50px;
+        border-top-right-radius: 120px;
+        border-top-left-radius: 150px;
+        border-bottom-right-radius: 130px;
+        border-bottom-left-radius: 140px;
+        animation: waveB 6s linear infinite;
+    }
+
+    @keyframes waveA {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes waveB {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
     }
 </style>
