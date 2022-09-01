@@ -1,5 +1,6 @@
 <template>
-    <div :class="'animated '+ animated" :style="styleSet"> 
+    <div :class="'animated '+ animated" :style="styleSet">
+        <div v-if="curdiv" :style="[styleclick]"> </div>
     </div>
 </template>
 
@@ -45,9 +46,17 @@
         },
 
         computed: {
+            styleclick() {
+                return {
+                    border: this.curdiv ? '5px solid blue' : '0px',
+                    position: 'absolute',
+                    width: this.ss.width + 5 + "px",
+                    height: this.ss.height + 5 + "px",
+                }
+            },
             styleSet: function () {
                 var style = {
-                    border: this.curdiv ? '5px solid blue' : '5px',
+                    // border: this.curdiv ? '5px solid blue' : '5px',
                     position: 'absolute',
                     top: this.ss.top + 'px',
                     left: this.ss.left + 'px',
@@ -55,11 +64,8 @@
                     height: this.ss.height + "px",
                     fontSize: '20px',
                     background: 'url(' + this.ss.url + ') no-repeat center / 100% 100%',
-                    // backgroundColor: this.ss.backgroundColor,
                     zIndex: this.ss.zindex
-                    //transform:this.ss.transform
                 }
-                // return merge(this.ss, style)
                 return style
 
             },
