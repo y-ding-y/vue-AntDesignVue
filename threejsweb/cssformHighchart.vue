@@ -514,6 +514,23 @@
                         <el-slider v-model="seriesitem.depth">
                         </el-slider>
                     </a-form-model-item>
+                    <a-form-model-item label="Events">
+                        <el-select v-model="seriesitem.event" size="mini" placeholder="请选择">
+                            <el-option v-for="item in seriesevent" :key="item" :value="item">
+                                <span style="float: left">{{ item }}</span>
+                            </el-option>
+                        </el-select>
+
+                        <a-input type="textarea" @keydown="handlePushKeyword($event)"
+                            @keyup.enter.native="handle_change" v-if="seriesitem.event=='showdetail'"
+                            v-model="seriesitem.eventparams">
+                        </a-input>
+                        <a-input type="textarea" @keydown="handlePushKeyword($event)"
+                        @keyup.enter.native="handle_change" v-if="seriesitem.event=='topage'"
+                        v-model="seriesitem.eventparams">
+                    </a-input>
+                    </a-form-model-item>
+
                 </a-form-model>
             </el-collapse-item>
         </el-collapse>
@@ -552,6 +569,7 @@
                 seriestype: [
                     'bar', 'column', 'line', 'pie', 'area'
                 ],
+                seriesevent: ['showdetail', 'topage'],
             };
         },
         created() {
