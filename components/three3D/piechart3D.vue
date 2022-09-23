@@ -2,10 +2,15 @@
     <div :class="'animated '+ animated" :style="style">
         <div v-if="curdiv" :style="[styleclick]"> </div>
         <highcharts :options="container" :key="i"></highcharts>
+
+        <v-modaldetail :modaltitle="modaltitle" :visible="visible" @closemodal="handleCancel" :params="params">
+        </v-modaldetail>
+
     </div>
 </template>
 
 <script>
+    import VModaldetail from './modaldetail.vue'
 
     const DataSet = require('@antv/data-set');
     const data = [
@@ -33,16 +38,22 @@
             },
             curdiv: { type: Boolean, default: false },
         },
+        components: {
+            VModaldetail
+        },
         data() {
             return {
                 isshow: true,
                 i: 0,
+                visible: false,
                 result: data,
                 data,
                 animated: this.ss.inanimate,
                 refreshData: null,
 
                 toroute: null,
+                modaltitle: "",
+                params: "{}",
             }
         },
         created() {
@@ -106,10 +117,7 @@
                 this.i++
             },
         },
-        computed: {
-            highchartstyle() {
-                return this.ss.highchart
-            },
+        computed: { 
             credits() {
                 return this.ss.highchart.credits
             },
@@ -182,6 +190,7 @@
                         delete chart_frame[e]
                     }
                 })
+                const that = this
                 return {
                     credits: {
                         enabled: this.credits.enabled,
@@ -285,6 +294,7 @@
                             depth: 0,
                         },
                         pie: {
+                            slicedOffset: 0,
                             size: this.plotOptions.pie.size,
                             allowPointSelect: true,
                             cursor: 'pointer',
@@ -384,13 +394,39 @@
                             },
                             data: this.result.map(e => {
                                 return { name: e[s.xname], y: e[s.yname] }
-                            })
+                            }),
+                            events: {
+                                click: function (event) {
+                                    var params = s.eventparams == undefined ? "{}" : s.eventparams
+                                    var temp = eval("(" + params + ")")
+                                    switch (s.event) {
+                                        case "showdetail":
+                                            that.visible = true
+                                            that.modaltitle = event.point.name
+                                            that.params = params
+                                            break;
+                                        case "topage":
+                                            window.open(that.$router.resolve({
+                                                path: temp.path
+                                            }).href, temp.type)
+                                            break;
+                                        default: break;
+                                    }
+                                }
+                            },
                         }
                     })
                 }
             },
         },
         methods: {
+            getRefsAff() {
+                return document.getElementById('fulls')
+            },
+            handleCancel() {
+                this.visible = false;
+            },
+
             click_interval(e) {
                 if (e != undefined && e.data != undefined && this.toroute != null) {
                     let temp = eval("(" + this.toroute + ")")
